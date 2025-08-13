@@ -1,0 +1,40 @@
+server:
+  port: 8081
+
+spring:
+  # MariaDB 접속 설정
+  datasource:
+    url: jdbc:mariadb://localhost:3306/intranet?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  jpa:
+    # 개발용: create / update / validate / none
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+security:
+  jwt:
+    secret: 'A2211F1F9D55CFC2F9FAC9D9F39FE'
+
+# CORS (Vite dev)
+cors:
+  allowed-origins: 'http://localhost:5173'
+
+# SQL 로그 출력
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE

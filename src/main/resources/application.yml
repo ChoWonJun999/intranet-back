@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: dev # 로컬 기본값 (서버에서는 SPRING_PROFILES_ACTIVE로 덮어쓰기)
+  mvc:
+    problemdetails:
+      enabled: true
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      naming:
+        physical-strategy: com.odpia.intranet.config.persistence.naming.UpperCaseNamingStrategy
+    properties:
+      hibernate:
+        show_sql: false # 중복 로그 방지 (SQL은 로거로만 보세요)
+        # format_sql: true
+
+security:
+  jwt:
+    access-exp-min: 30
+    refresh-exp-day: 7
+
+# 공통 로그 레벨(필요 시 최소만 둠; 자세한 건 각 프로필에서 조정)
+logging:
+  level:
+    root: INFO

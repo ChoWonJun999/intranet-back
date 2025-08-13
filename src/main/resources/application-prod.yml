@@ -1,0 +1,43 @@
+server:
+  port: 80
+
+spring:
+  # 운영 DB는 환경변수로 주입(예: 시스템d, Docker, k8s 등)
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  # 운영에서는 컬러 강제 X (수집시 ANSI 코드 섞이지 않게)
+  output:
+    ansi:
+      enabled: DETECT
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # 운영: 보통 validate/none 권장
+    properties:
+      hibernate:
+        format_sql: false # 운영: 로그 양 최소화
+
+security:
+  jwt:
+    # 운영은 절대 하드코딩 X → 환경변수로 주입
+    secret: ${JWT_SECRET}
+    access-exp-min: 15
+    refresh-exp-day: 7
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: INFO
+        type:
+          descriptor:
+            sql:
+              BasicBinder: INFO
+
+# CORS (실서버 도메인)
+cors:
+  allowed-origins: 'https://intranet.company.com'

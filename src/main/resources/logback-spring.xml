@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds"> <!-- logback 구현체가 설정을 확인하는 주기 -->
+
+    <property name="LOG_DIR" value="logs" />
+    <property name="TIME" value="%d{yyyy-MM-dd HH:mm:ss.SSS}"/>
+    <property name="BASE_PATTERN" value="[${TIME}] %5level [%thread] %logger{36} - %msg%n"/>
+    <property name="BASE_CONSOLE_PATTERN" value="%highlight([${TIME}] %5level) [%thread] %cyan(%logger{36}) - %msg%n"/>
+    <property name="SQL_CONSOLE_PATTERN" value="%boldGreen([${TIME}]   SQL) - %msg%n"/>
+    <property name="BINDER_CONSOLE_PATTERN" value="%boldYellow([${TIME}]  BIND) - %msg%n"/>
+
+    <!-- 콘솔 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${BASE_CONSOLE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 파일 -->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/app/app.log</file>
+        <encoder>
+            <pattern>${BASE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/app/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- SQL 콘솔 -->
+    <appender name="sqlConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${SQL_CONSOLE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- SQL 파일 -->
+    <appender name="sqlFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/sql/sql.log</file>
+        <encoder>
+            <pattern>[${TIME}] [SQL] - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/sql/sql.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- BIND 파일 -->
+    <appender name="binderFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/sql-bind/sql-bind.log</file>
+        <encoder>
+            <pattern>[${TIME}] [BIND] - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/sql-bind/sql-bind.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="console"/>
+        </root>
+
+        <!-- Hibernate SQL -->
+        <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+            <appender-ref ref="sqlConsole"/>
+        </logger>
+
+        <!-- Hibernate BIND -->
+        <logger name="org.hibernate.type.descriptor.sql" level="TRACE"></logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <!-- Root -->
+        <root level="INFO">
+            <appender-ref ref="file"/>
+        </root>
+
+        <!-- Hibernate SQL -->
+        <logger name="org.hibernate.SQL" level="INFO" additivity="false">
+            <appender-ref ref="sqlFile"/>
+        </logger>
+
+        <!-- Hibernate BIND -->
+        <logger name="org.hibernate.type.descriptor.sql" level="INFO" additivity="false">
+            <appender-ref ref="binderFile"/>
+        </logger>
+    </springProfile>
+
+</configuration>
