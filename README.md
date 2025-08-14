@@ -25,11 +25,60 @@
 project-root/
  ├── src/
  │   ├── main/
- │   │   ├── java/        # Java 소스 코드
- │   │   └── resources/   # 설정 파일(application.yml 등)
- │   └── test/            # 테스트 코드
- ├── build.gradle         # Gradle 빌드 스크립트
- └── settings.gradle      # Gradle 설정 파일
+ │   │   ├── java/com/odpia/intranet/
+ │   │   │   ├── common/
+ │   │   │   │   ├── domain/
+ │   │   │   │   └── exception/
+ │   │   │   │       ├── CommonException.java
+ │   │   │   │       └── NotFoundException.java
+ │   │   │   ├── config/
+ │   │   │   │   ├── infra/                                     // (캐시/클라이언트/메시징 등 인프라)
+ │   │   │   │   ├── persistence/
+ │   │   │   │   │   └── naming/
+ │   │   │   │   │       └── UpperCaseNamingStrategy.java
+ │   │   │   │   ├── security/
+ │   │   │   │   │   ├── config/                                // 프로필별 보안 체인 & 공통 빈
+ │   │   │   │   │   │   ├── DevSecurityConfig.java             // @Configuration @Profile("dev")
+ │   │   │   │   │   │   ├── ProdSecurityConfig.java            // @Configuration @Profile("prod")
+ │   │   │   │   │   │   └── SecurityCommonConfig.java          // @Configuration (PasswordEncoder 등 공통)
+ │   │   │   │   │   ├── core/                                  // 보안 코어 어댑터
+ │   │   │   │   │   │   ├── SecurityUserDetails.java
+ │   │   │   │   │   │   └── SecurityUserDetailsService.java
+ │   │   │   │   │   └── jwt/                                   // JWT 유틸/필터
+ │   │   │   │   │       ├── JwtAuthFilter.java
+ │   │   │   │   │       └── JwtTokenProvider.java
+ │   │   │   │   └── web/
+ │   │   │   │       ├── advice/
+ │   │   │   │       │   └── GlobalExceptionHandler.java
+ │   │   │   │       ├── docs/
+ │   │   │   │       │   └── SwaggerConfig.java
+ │   │   │   │       └── mvc/
+ │   │   │   │           └── WebMvcConfig.java
+ │   │   │   ├── user/
+ │   │   │   │   ├── controller/
+ │   │   │   │   │   └── v1/
+ │   │   │   │   │       └── UserController.java
+ │   │   │   │   ├── domain/
+ │   │   │   │   │   ├── RoleType.java
+ │   │   │   │   │   ├── User.java
+ │   │   │   │   │   └── UserStatus.java
+ │   │   │   │   ├── dto/
+ │   │   │   │   │   ├── UserCreateRequest.java
+ │   │   │   │   │   ├── UserResponse.java
+ │   │   │   │   │   └── UserUpdateRequest.java
+ │   │   │   │   ├── repository/
+ │   │   │   │   │   └── UserRepository.java
+ │   │   │   │   └── service/
+ │   │   │   │       └── UserService.java
+ │   │   │   └── IntranetApplication.java
+ │   │   └── resources/
+ │   │       ├── application-dev.yml
+ │   │       ├── application-prod.yml
+ │   │       ├── application.yml
+ │   │       └── logback-spring.yml
+ │   └── test/
+ ├── build.gradle
+ └── settings.gradle
 ```
 
 ---

@@ -1,4 +1,4 @@
-package com.odpia.intranet.config.security;
+package com.odpia.intranet.config.security.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -17,7 +17,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
-@Component @RequiredArgsConstructor
+@Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
 	@Value("${security.jwt.secret}")
@@ -33,16 +34,23 @@ public class JwtTokenProvider {
 
 	public String createAccessToken(String subject, Collection<String> roles) {
 		Instant now = Instant.now();
-		return Jwts.builder().setSubject(subject).claim("roles", roles).setIssuedAt(Date.from(now))
+		return Jwts.builder()
+		        .setSubject(subject)
+		        .claim("roles", roles)
+		        .setIssuedAt(Date.from(now))
 		        .setExpiration(Date.from(now.plus(Duration.ofMinutes(accessExpMin))))
-		        .signWith(key(), SignatureAlgorithm.HS256).compact();
+		        .signWith(key(), SignatureAlgorithm.HS256)
+		        .compact();
 	}
 
 	public String createRefreshToken(String subject) {
 		Instant now = Instant.now();
-		return Jwts.builder().setSubject(subject).setIssuedAt(Date.from(now))
+		return Jwts.builder()
+		        .setSubject(subject)
+		        .setIssuedAt(Date.from(now))
 		        .setExpiration(Date.from(now.plus(Duration.ofDays(refreshExpDay))))
-		        .signWith(key(), SignatureAlgorithm.HS256).compact();
+		        .signWith(key(), SignatureAlgorithm.HS256)
+		        .compact();
 	}
 
 	public Jws<Claims> parse(String token) {

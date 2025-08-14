@@ -1,4 +1,4 @@
-package com.odpia.intranet.user.exception;
+package com.odpia.intranet.common.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {

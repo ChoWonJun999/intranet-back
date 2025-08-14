@@ -1,15 +1,19 @@
 package com.odpia.intranet.user.service;
 
-import com.odpia.intranet.user.domain.User;
-import com.odpia.intranet.user.domain.UserStatus;
-import com.odpia.intranet.user.dto.*;
-import com.odpia.intranet.user.exception.NotFoundException;
-import com.odpia.intranet.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.odpia.intranet.common.exception.NotFoundException;
+import com.odpia.intranet.user.domain.User;
+import com.odpia.intranet.user.domain.UserStatus;
+import com.odpia.intranet.user.dto.UserCreateRequest;
+import com.odpia.intranet.user.dto.UserResponse;
+import com.odpia.intranet.user.dto.UserUpdateRequest;
+import com.odpia.intranet.user.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -23,11 +27,11 @@ public class UserService {
 			throw new IllegalArgumentException("이미 존재하는 이메일입니다: " + req.email());
 		}
 		User user = User.builder()
-				.email(req.email())
-				.name(req.name())
-				.status(req.status() == null ? UserStatus.ACTIVE : req.status())
-				.createdBy(req.createdBy())
-				.build();
+		        .email(req.email())
+		        .username(req.userName())
+		        .status(req.status() == null ? UserStatus.ACTIVE : req.status())
+		        .createdBy(req.createdBy())
+		        .build();
 		return toResponse(userRepository.save(user));
 	}
 
@@ -44,7 +48,7 @@ public class UserService {
 	@Transactional
 	public UserResponse update(Long id, UserUpdateRequest req) {
 		User user = find(id);
-		user.setName(req.name());
+		user.setUsername(req.name());
 		if (req.status() != null)
 			user.setStatus(req.status());
 		return toResponse(user);
@@ -57,12 +61,10 @@ public class UserService {
 	}
 
 	private User find(Long id) {
-		return userRepository.findById(id)
-				.orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. id=" + id));
+		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다. id=" + id));
 	}
 
 	private UserResponse toResponse(User u) {
-		return new UserResponse(u.getId(), u.getEmail(), u.getName(), u.getStatus(), u.getCreatedAt(),
-				u.getUpdatedAt());
+		return new UserResponse(u.getId(), u.getEmail(), u.getUsername(), u.getStatus(), u.getCreatedAt(), u.getUpdatedAt());
 	}
 }

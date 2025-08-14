@@ -1,11 +1,24 @@
 package com.odpia.intranet.user.domain;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
+
 import org.hibernate.annotations.Comment;
+
 import com.odpia.intranet.common.domain.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -13,7 +26,7 @@ import com.odpia.intranet.common.domain.BaseEntity;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-@Table(name = "tb_sys_user")
+@Table(name = "TB_SYS_USER")
 public class User extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,12 +60,17 @@ public class User extends BaseEntity {
 	@Comment("이메일")
 	private String email;
 
-	@Column(nullable = false, length = 50)
+	@Column(name = "NAME", nullable = false, length = 50)
 	@Comment("이름")
-	private String name;
+	private String username;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 10)
 	@Comment("상태")
-	private UserStatus status;
+	private UserStatus status; // ACTIVE, INACTIVE
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 20)
+	@Comment("권한")
+	private RoleType role; // ROLE_USER, ROLE_ADMIN
 }
